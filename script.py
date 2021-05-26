@@ -8,7 +8,7 @@ os.system("pwd")
 # ip_address 	= "10.30.107.55"
 ip_address 	= "10.30.44.112"
 zyd_address = "zhangyidan@" + ip_address
-rs_address	= "/Users/zhangyidan/Researching/cuhksz/CV/BN_para/result/May16_Mor/"
+rs_address	= "/Users/zhangyidan/Researching/cuhksz/CV/BN_para/result/May26/"
 sv_address 	=  zyd_address+ ":"+rs_address
 psw 		= "WZXallen1997"
 
@@ -97,8 +97,8 @@ def main():
 	# exp(dataset=0, exp_name="MMT", pretrain=0, epoch=16, moco=1)
 	# exp(dataset= 0, exp_name="MMT", pretrain=0, epoch=16, moco=0)
 
-	exp(dataset= 1, exp_name="frcifar", pretrain=1, epoch=16, moco=0)
-	exp(dataset= 1, exp_name="frcifar", pretrain=0, epoch=16, moco=1)
+	exp(dataset= 0, exp_name="CAT", pretrain=1, epoch=16, moco=0)
+	exp(dataset= 0, exp_name="CAT", pretrain=0, epoch=16, moco=1)
 	# exp(dataset= 1, exp_name="MMT_Cifar", pretrain=0, epoch=16, moco=0)
 
 	# exp(dataset= 1, exp_name="Cifar100baselineP", pretrain=1, epoch=16, moco=0)

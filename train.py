@@ -54,11 +54,10 @@ def setSeeds(seed):
     return
 
 
-def train(model, train_dl, val_dl, configs):
+def train(record, model, train_dl, val_dl, configs):
     # setting the optimizer
     optimizer = torch.optim.SGD(model.parameters(), configs.learning_rate)
     # record the value in every epoch
-    record = []
 
     for epoch in range(configs.epochs):
 
@@ -82,7 +81,7 @@ def train(model, train_dl, val_dl, configs):
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
-            # model.momenTuneBN()
+            model.momenTuneBN()
 
 
         # Validate the model
@@ -109,24 +108,45 @@ def control_center():
     model = getModel(configs)
     # set the GPU Num here
     # torch.cuda.set_device(configs.gpu)
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = model.device
 
-    train_data, val_data, test_data = getData(configs)
+    # train_data, val_data, test_data = getData(configs)
+
+    train_cifar, val_cifar, test_cifar = getCifar100Data(configs)
+    train_ind, val_ind,test_ind = getIndoorData(configs)
 
     # set seeds based on config
     setSeeds(configs.seed)
 
     # put the network upon the CUDA
-    model = to_device(model,device)
-    train_data, val_data, test_data            = DeviceDataLoader(train_data, device), DeviceDataLoader(val_data, device),  DeviceDataLoader(test_data, device),
-    record = train(model, train_data, val_data, configs)
+    model = to_device(model, device)
+    record = []
+
+    # train_data, val_data, test_data            = DeviceDataLoader(train_data, device), DeviceDataLoader(val_data, device),  DeviceDataLoader(test_data, device)
+    train_cifar, val_cifar, test_cifar = DeviceDataLoader(train_cifar, device), DeviceDataLoader(val_cifar, device), DeviceDataLoader(test_cifar, device)
+    train_ind, val_ind, test_ind = DeviceDataLoader(train_ind, device), DeviceDataLoader(val_ind, device), DeviceDataLoader(test_ind, device)
+
+
+
+
+
+    record = train(record, model, train_ind, val_ind, configs)
+
+    model.network.fc = nn.Sequential(
+        nn.Linear(in_features=2048, out_features=100)
+    )
+
+    model = to_device(model, device)
+
+    record = train(record, model, train_cifar, val_cifar, configs)
+
 
     # check the parameters is freeze or not
     for name, parameters in model.named_parameters():
         print(name)
         print(parameters.requires_grad)
 
-    test_acc = evaluate(model, test_data, validate_or_not=False)['test_acc']
+    test_acc = evaluate(model, test_cifar, validate_or_not=False)['test_acc']
 
 
     exp_name = configs.exp_name

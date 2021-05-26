@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torchvision import models
 from imageBaseModel import ImageClassificationBase
+from getDevice import DeviceDataLoader, to_device
 
 class ResNet50_C(ImageClassificationBase):
     def __init__(self, configs, namelist):
@@ -27,13 +28,13 @@ class ResNet50_C(ImageClassificationBase):
         )
 
         self.aux_bn = nn.BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-
+        self.device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 
         # reserve all the bn data
         self.bn_origin = {}
         for name, parameters in self.named_parameters():
             if 'bn' in name:
-                self.bn_origin[name] = parameters
+                self.bn_origin[name] = to_device(parameters.clone().detach(), self.device)
 
 
         self.freezeBN()

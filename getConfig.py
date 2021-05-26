@@ -16,8 +16,8 @@ def getConfig():
     parser.add_argument("--num_workers", type=int, default=8)
     parser.add_argument("--img_pth", default="/home/zyd/exp1/re_para/img/")
     parser.add_argument("--exp_name", default="Exp")
-    parser.add_argument("--pretrain", type=int, default=0)
-    parser.add_argument("--moco", type=int, default=1)
+    parser.add_argument("--pretrain", type=int, default=1)
+    parser.add_argument("--moco", type=int, default=0)
     parser.add_argument("--moco_pth", default="/home/zyd/exp1/re_para/moco_v2_200ep_pretrain.pth.tar")
     parser.add_argument("--dataset",type=int, default=0)
 
